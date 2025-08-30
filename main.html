@@ -3,248 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💰 Millionaire Simulator 💰</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Windows 12 Simulation</title>
 <style>
-  body { font-family: Arial, sans-serif; background: #121212; color: #fff; padding: 20px; }
-  h1 { text-align: center; }
-  #wallet, #portfolio, #actions { margin: 20px 0; }
-  button { padding: 10px; margin: 5px; cursor: pointer; font-size: 16px; }
-  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  th, td { border: 1px solid #444; padding: 8px; text-align: center; }
-  th { background: #222; }
-  #message { margin-top: 10px; font-size: 16px; min-height: 24px; color: yellow; text-align: center; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: url('https://picsum.photos/1920/1080?blur=5') no-repeat center center fixed;
+    background-size: cover;
+    overflow: hidden;
+  }
+  #desktop { position: relative; width: 100vw; height: 100vh; }
+  .icon { width: 80px; text-align: center; color: white; cursor: pointer; display: inline-block; margin: 10px; }
+  .icon img { width: 64px; height: 64px; display: block; margin: auto; }
+  #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; background: rgba(0,0,0,0.6); display: flex; align-items: center; }
+  #start-button { width: 60px; text-align: center; color: white; cursor: pointer; user-select: none; }
+  #start-menu { position: absolute; bottom: 40px; left: 0; width: 200px; background: rgba(0,0,0,0.8); color: white; display: none; flex-direction: column; padding: 10px; }
+  #start-menu button { background: none; border: none; color: white; padding: 5px; text-align: left; cursor: pointer; }
+  .window { position: absolute; width: 300px; height: 200px; background: rgba(255,255,255,0.95); border: 1px solid #aaa; border-radius: 6px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+  .titlebar { background: #0078d4; color: white; padding: 5px; cursor: move; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .titlebar button { background: red; border: none; color: white; border-radius: 3px; cursor: pointer; }
+  .content { padding: 10px; height: calc(100% - 30px); overflow: auto; }
 </style>
 </head>
 <body>
-
-<h1>💰 Millionaire Simulator 💰</h1>
-
-<div id="wallet">
-  💵 <strong>Wallet Balance:</strong> <span id="balance">1000</span> CoinX
+<div id="desktop">
+  <div class="icon" onclick="openApp('Notepad')">
+    <img src="https://cdn-icons-png.flaticon.com/512/105/105223.png" />
+    <p>Notepad</p>
+  </div>
+  <div id="taskbar">
+    <div id="start-button" onclick="toggleStartMenu()">Start</div>
+  </div>
+  <div id="start-menu">
+    <button onclick="openApp('Calculator')">Calculator</button>
+  </div>
+  <div id="windows-container"></div>
 </div>
-
-<div id="portfolio">
-  📊 <h3>Portfolio</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Coin</th>
-        <th>Amount</th>
-        <th>Value</th>
-        <th>Profit/Loss</th>
-      </tr>
-    </thead>
-    <tbody id="portfolio-body"></tbody>
-  </table>
-</div>
-
-<div id="actions">
-  <button onclick="buyCoin()">🟢 Buy 1 CoinX</button>
-  <button onclick="sellCoin()">🔴 Sell 1 CoinX</button>
-</div>
-
-<div id="message"></div>
-
-<canvas id="priceChart" height="100"></canvas>
 
 <script>
-let balance = parseFloat(localStorage.getItem('balance')) || 1000;
-let portfolio = JSON.parse(localStorage.getItem('portfolio')) || { CoinX: 0 };
-let priceHistory = JSON.parse(localStorage.getItem('priceHistory')) || [];
-let currentPrice = 50; // easier to make money
-let messageEl = document.getElementById('message');
+  const startMenu = document.getElementById('start-menu');
+  function toggleStartMenu() { startMenu.style.display = startMenu.style.display === 'flex' ? 'none' : 'flex'; }
 
-// Update UI
-function updateUI(msg='') {
-  document.getElementById('balance').innerText = balance.toFixed(2);
-  const tbody = document.getElementById('portfolio-body');
-  tbody.innerHTML = '';
-  for (let coin in portfolio) {
-    let value = portfolio[coin] * currentPrice;
-    let profit = value - (portfolio[coin] * 50); // starting price = 50
-    tbody.innerHTML += `<tr>
-      <td>${coin}</td>
-      <td>${portfolio[coin]}</td>
-      <td>${value.toFixed(2)}</td>
-      <td style="color:${profit>=0?'lightgreen':'red'}">${profit.toFixed(2)}</td>
-    </tr>`;
+  const windowsContainer = document.getElementById('windows-container');
+  let zIndexCounter = 1;
+
+  function openApp(name) {
+    const win = document.createElement('div');
+    win.className = 'window';
+    win.style.top = '100px';
+    win.style.left = '100px';
+    win.style.zIndex = zIndexCounter++;
+    win.innerHTML = `
+      <div class="titlebar" onmousedown="dragStart(event,this.parentElement)">${name}
+        <button onclick="closeWindow(this)">X</button>
+      </div>
+      <div class="content">${name === 'Notepad' ? '<textarea style="width:100%;height:100%;"></textarea>' : '<p>App Content</p>'}</div>`;
+    windowsContainer.appendChild(win);
   }
-  messageEl.innerText = msg;
-}
 
-// Buy coin
-function buyCoin() {
-  if (balance >= currentPrice) {
-    balance -= currentPrice;
-    portfolio.CoinX += 1;
-    saveGame();
-    updateUI('🟢 Bought 1 CoinX!');
-  } else {
-    updateUI('❌ Not enough balance!');
+  function closeWindow(btn) { btn.closest('.window').remove(); }
+
+  let dragData = null;
+  function dragStart(e, win) {
+    e.preventDefault();
+    dragData = {win, offsetX: e.clientX - win.offsetLeft, offsetY: e.clientY - win.offsetTop};
+    window.addEventListener('mousemove', dragMove);
+    window.addEventListener('mouseup', dragEnd);
   }
-}
 
-// Sell coin
-function sellCoin() {
-  if (portfolio.CoinX >= 1) {
-    balance += currentPrice;
-    portfolio.CoinX -= 1;
-    saveGame();
-    updateUI('🔴 Sold 1 CoinX!');
-  } else {
-    updateUI('❌ You have no CoinX!');
+  function dragMove(e) {
+    if (!dragData) return;
+    dragData.win.style.left = (e.clientX - dragData.offsetX) + 'px';
+    dragData.win.style.top = (e.clientY - dragData.offsetY) + 'px';
   }
-}
 
-// Save game
-function saveGame() {
-  localStorage.setItem('balance', balance);
-  localStorage.setItem('portfolio', JSON.stringify(portfolio));
-  localStorage.setItem('priceHistory', JSON.stringify(priceHistory));
-}
-
-// Simulate price
-function simulatePrice() {
-  // bigger fluctuations to earn money faster
-  let change = (Math.random() - 0.4) * 10; 
-  currentPrice = Math.max(1, currentPrice + change);
-  priceHistory.push(currentPrice);
-  if (priceHistory.length > 100) priceHistory.shift(); // keep chart scrolling
-  chart.data.labels = priceHistory.map((_, i) => i);
-  chart.data.datasets[0].data = priceHistory;
-  chart.update();
-  updateUI();
-}
-
-// Chart
-const ctx = document.getElementById('priceChart').getContext('2d');
-const chart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: priceHistory.map((_, i) => i),
-    datasets: [{
-      label: 'CoinX Price',
-      data: priceHistory,
-      borderColor: 'lime',
-      backgroundColor: 'rgba(0,255,0,0.1)',
-      fill: true,
-      tension: 0.2
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: { y: { beginAtZero: true } }
-  }
-});
-
-// Start simulation
-updateUI('Welcome to 💰 Millionaire Simulator!');
-setInterval(simulatePrice, 1000);
+  function dragEnd() { dragData = null; window.removeEventListener('mousemove', dragMove); window.removeEventListener('mouseup', dragEnd); }
 </script>
-
-</body>
-</html>
-    <tbody id="portfolio-body"></tbody>
-  </table>
-</div>
-
-<div id="actions">
-  <button onclick="buyCoin()">🟢 Buy 1 CoinX</button>
-  <button onclick="sellCoin()">🔴 Sell 1 CoinX</button>
-</div>
-
-<canvas id="priceChart" height="100"></canvas>
-
-<script>
-let balance = parseFloat(localStorage.getItem('balance')) || 1000;
-let portfolio = JSON.parse(localStorage.getItem('portfolio')) || { CoinX: 0 };
-let priceHistory = JSON.parse(localStorage.getItem('priceHistory')) || [];
-let currentPrice = 100;
-
-// Update UI
-function updateUI() {
-  document.getElementById('balance').innerText = balance.toFixed(2);
-  const tbody = document.getElementById('portfolio-body');
-  tbody.innerHTML = '';
-  for (let coin in portfolio) {
-    let value = portfolio[coin] * currentPrice;
-    let profit = value - (portfolio[coin] * 100); // starting buy price = 100
-    tbody.innerHTML += `<tr>
-      <td>${coin}</td>
-      <td>${portfolio[coin]}</td>
-      <td>${value.toFixed(2)}</td>
-      <td style="color:${profit>=0?'lightgreen':'red'}">${profit.toFixed(2)}</td>
-    </tr>`;
-  }
-}
-
-// Buy coin
-function buyCoin() {
-  if (balance >= currentPrice) {
-    balance -= currentPrice;
-    portfolio.CoinX += 1;
-    saveGame();
-    updateUI();
-  } else alert('❌ Not enough balance to buy 1 CoinX!');
-}
-
-// Sell coin
-function sellCoin() {
-  if (portfolio.CoinX >= 1) {
-    balance += currentPrice;
-    portfolio.CoinX -= 1;
-    saveGame();
-    updateUI();
-  } else alert('❌ You have no CoinX to sell!');
-}
-
-// Save game
-function saveGame() {
-  localStorage.setItem('balance', balance);
-  localStorage.setItem('portfolio', JSON.stringify(portfolio));
-  localStorage.setItem('priceHistory', JSON.stringify(priceHistory));
-}
-
-// Simulate price
-function simulatePrice() {
-  let change = (Math.random() - 0.5) * 5; // random fluctuation
-  currentPrice = Math.max(1, currentPrice + change);
-  priceHistory.push(currentPrice);
-  if (priceHistory.length > 50) priceHistory.shift();
-  chart.data.labels = priceHistory.map((_, i) => i);
-  chart.data.datasets[0].data = priceHistory;
-  chart.update();
-  updateUI();
-}
-
-// Chart
-const ctx = document.getElementById('priceChart').getContext('2d');
-const chart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: priceHistory.map((_, i) => i),
-    datasets: [{
-      label: 'CoinX Price',
-      data: priceHistory,
-      borderColor: 'lime',
-      backgroundColor: 'rgba(0,255,0,0.1)',
-      fill: true,
-      tension: 0.2
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: { y: { beginAtZero: false } }
-  }
-});
-
-// Start simulation
-updateUI();
-setInterval(simulatePrice, 1000);
-</script>
-
 </body>
 </html>
