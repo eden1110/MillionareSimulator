@@ -3,59 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Main Page</title>
+<title>New Blocks - Login</title>
 <style>
   body {
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
+    margin:0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    height: 100vh; 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #00d2ff, #3a7bd5); 
-    color: #fff;
-    text-align: center;
-    margin: 0;
+    height: 100vh;
+    background: #f0f2f5;
   }
+  #login-container {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    width: 300px;
+  }
+  h2 { text-align:center; margin-bottom:20px; }
+  input { width:100%; padding:8px; margin:8px 0; border-radius:6px; border:1px solid #ccc; }
   button {
-    padding: 12px 20px; 
-    margin-top: 20px; 
-    border: none; 
-    border-radius: 8px;
-    background: #000dff; 
-    color: #fff; 
-    font-size: 16px; 
-    cursor: pointer;
-    transition: background 0.3s ease;
+    width:100%; padding:10px; margin:10px 0;
+    border:none; border-radius:6px; background:#3498db; color:#fff; cursor:pointer;
+    font-weight:bold;
   }
-  button:hover {
-    background: #6b73ff;
+  button:hover { background:#2980b9; }
+  #togglePassword {
+    position:absolute; right:20px; top:177px; cursor:pointer;
+    font-size:0.9em; color:#555;
+    user-select:none;
+  }
+  .message {
+    color:red; font-size:0.9em; text-align:center; min-height:18px;
+  }
+  #switchMode {
+    text-align:center; margin-top:10px; font-size:0.9em; cursor:pointer; color:#3498db;
   }
 </style>
 </head>
 <body>
+
+<div id="login-container">
+  <h2 id="formTitle">Login</h2>
+  <div class="message" id="message"></div>
+  <input type="text" id="username" placeholder="Username">
+  <div style="position:relative;">
+    <input type="password" id="password" placeholder="Password">
+    <span id="togglePassword">Show</span>
+  </div>
+  <button id="submitBtn">Login</button>
+  <div id="switchMode">Don't have an account? Sign up</div>
+</div>
+
 <script>
-  // Check if user is logged in
-  const loggedInUser = localStorage.getItem("loggedIn");
-  if (!loggedInUser) {
-    window.location.href = "main.html"; // redirect to main.html if not logged in
+let signupMode = false;
+const messageEl = document.getElementById('message');
+const formTitle = document.getElementById('formTitle');
+const submitBtn = document.getElementById('submitBtn');
+const switchMode = document.getElementById('switchMode');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const togglePassword = document.getElementById('togglePassword');
+
+// Toggle password visibility
+togglePassword.addEventListener('click', ()=>{
+  if(passwordInput.type === 'password'){
+    passwordInput.type = 'text';
+    togglePassword.innerText = 'Hide';
+  } else {
+    passwordInput.type = 'password';
+    togglePassword.innerText = 'Show';
   }
-</script>
+});
 
-<h1>Welcome, <span id="user"></span></h1>
-<p>You are now logged in.</p>
-<button onclick="logout()">Logout</button>
-
-<script>
-  // Display logged-in user
-  const userSpan = document.getElementById("user");
-  userSpan.textContent = loggedInUser;
-
-  // Logout function
-  function logout() {
-    localStorage.removeItem("loggedIn");
-    window.location.href = "main.html"; // redirect to main.html after logout
+// Switch between login and signup
+switchMode.addEventListener('click', ()=>{
+  signupMode = !signupMode;
+  if(signupMode){
+    formTitle.innerText = 'Sign Up';
+    submitBtn.innerText = 'Sign Up';
+    switchMode.innerText = 'Already have an account? Log in';
+    messageEl.innerText = '';
+  } else {
+    formTitle.innerText = 'Login';
+    submitBtn.innerText = 'Login';
+    switchMode.innerText = "Don't have an account? Sign up";
+    messageEl.innerText = '';
   }
+});
+
+// Handle login/signup
+submitBtn.addEventListener('click', ()=>{
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value.trim();
+  if(!username || !password){
+    messageEl.innerText = "Please enter username and password";
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem('users') || '{}');
+
+  if(signupMode){
+    if(users[username]){
+      messageEl.innerText = "Username already taken";
+      return;
+    }
+    // Create new account
+    users[username] = password;
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('username', username);
+    window.location.href = 'main.html';
+  } else {
+    // Login
+    if(!users[username]){
+      messageEl.innerText = "Account with this username doesn't exist";
+      return;
+    }
+    if(users[username] !== password){
+      messageEl.innerText = "Incorrect password";
+      return;
+    }
+    localStorage.setItem('username', username);
+    window.location.href = 'main.html';
+  }
+});
 </script>
 </body>
 </html>
