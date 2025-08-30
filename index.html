@@ -6,24 +6,39 @@
 <title>Main Page</title>
 <style>
   body {
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #00d2ff, #3a7bd5); color: #fff;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    height: 100vh; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #00d2ff, #3a7bd5); 
+    color: #fff;
     text-align: center;
+    margin: 0;
   }
   button {
-    padding: 12px 20px; margin-top: 20px; border: none; border-radius: 8px;
-    background: #000dff; color: #fff; font-size: 16px; cursor: pointer;
+    padding: 12px 20px; 
+    margin-top: 20px; 
+    border: none; 
+    border-radius: 8px;
+    background: #000dff; 
+    color: #fff; 
+    font-size: 16px; 
+    cursor: pointer;
     transition: background 0.3s ease;
   }
-  button:hover {background: #6b73ff;}
+  button:hover {
+    background: #6b73ff;
+  }
 </style>
 </head>
 <body>
 <script>
+  // Check if user is logged in
   const loggedInUser = localStorage.getItem("loggedIn");
   if (!loggedInUser) {
-    window.location.href = "index.html";
+    window.location.href = "main.html"; // redirect to main.html if not logged in
   }
 </script>
 
@@ -32,12 +47,14 @@
 <button onclick="logout()">Logout</button>
 
 <script>
+  // Display logged-in user
   const userSpan = document.getElementById("user");
   userSpan.textContent = loggedInUser;
 
+  // Logout function
   function logout() {
     localStorage.removeItem("loggedIn");
-    window.location.href = "index.html";
+    window.location.href = "main.html"; // redirect to main.html after logout
   }
 </script>
 </body>
