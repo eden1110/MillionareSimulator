@@ -1,1 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candy Shop Simulator</title>
+<style>
+    body { font-family: Arial, sans-serif; background: #ffe4e1; margin: 0; padding: 0; }
+    #shop { display: flex; padding: 20px; }
+    #shelves, #storage, #customers, #actions { margin: 10px; padding: 10px; border: 2px solid #ff69b4; border-radius: 10px; background: #fff0f5; }
+    #shelves, #storage { flex: 1; }
+    #customers { flex: 1; }
+    #actions { flex: 0.5; display: flex; flex-direction: column; gap: 10px; }
+    .candy { margin: 5px; padding: 5px; border: 1px solid #ff69b4; border-radius: 5px; cursor: pointer; display: inline-block; }
+    .customer { margin: 5px; padding: 5px; border: 1px solid #ff1493; border-radius: 5px; background: #fff0f5; }
+</style>
+</head>
+<body>
 
+<h1 style="text-align:center;">🍭 Candy Shop Simulator</h1>
+
+<div id="shop">
+    <div id="shelves">
+        <h2>Shelves</h2>
+        <div id="shelfGummy">Gummy Bears: <span id="gummyStock">10</span></div>
+        <div id="shelfLollipop">Lollipops: <span id="lollipopStock">5</span></div>
+        <div id="shelfChocolate">Chocolate Bars: <span id="chocolateStock">5</span></div>
+    </div>
+
+    <div id="storage">
+        <h2>Storage</h2>
+        <div class="candy" onclick="restock('gummy')">Gummy Bears</div>
+        <div class="candy" onclick="restock('lollipop')">Lollipops</div>
+        <div class="candy" onclick="restock('chocolate')">Chocolate Bars</div>
+    </div>
+
+    <div id="customers">
+        <h2>Customers</h2>
+        <div id="customerQueue"></div>
+    </div>
+
+    <div id="actions">
+        <h2>Actions</h2>
+        <button onclick="serveCustomer()">Serve Customer</button>
+        <button onclick="makeCandy()">Make Candy</button>
+        <button onclick="upgradeShop()">Upgrade Shop</button>
+        <div>Coins: <span id="coins">0</span></div>
+    </div>
+</div>
+
+<script>
+    // Inventory
+    let inventory = {
+        gummy: 10,
+        lollipop: 5,
+        chocolate: 5
+    };
+
+    let coins = 0;
+
+    // Customers queue
+    let customers = [
+        {name: "NPC 1", order: {gummy: 2, lollipop: 1}, patience: 10},
+        {name: "NPC 2", order: {chocolate: 1}, patience: 15}
+    ];
+
+    function displayCustomers() {
+        const queueDiv = document.getElementById('customerQueue');
+        queueDiv.innerHTML = '';
+        customers.forEach((c, i) => {
+            queueDiv.innerHTML += `<div class="customer">${c.name} wants: ${Object.entries(c.order).map(([k,v]) => v + " " + k).join(", ")} (Patience: ${c.patience})</div>`;
+        });
+    }
+
+    function restock(candy) {
+        if (inventory[candy] < 20) { // shelf limit
+            inventory[candy]++;
+            updateShelf(candy);
+        }
+    }
+
+    function updateShelf(candy) {
+        document.getElementById(candy + "Stock").innerText = inventory[candy];
+    }
+
+    function serveCustomer() {
+        if (customers.length === 0) return alert("No customers!");
+        const customer = customers[0];
+        let canServe = true;
+        for (let c in customer.order) {
+            if (inventory[c] < customer.order[c]) canServe = false;
+        }
+
+        if (canServe) {
+            for (let c in customer.order) {
+                inventory[c] -= customer.order[c];
+                updateShelf(c);
+            }
+            coins += 5; // earn coins
+            document.getElementById('coins').innerText = coins;
+            customers.shift();
+            displayCustomers();
+            alert("Customer served!");
+        } else {
+            alert("Not enough candy!");
+        }
+    }
+
+    function makeCandy() {
+        inventory.gummy += 1;
+        inventory.lollipop += 1;
+        inventory.chocolate += 1;
+        updateShelf('gummy');
+        updateShelf('lollipop');
+        updateShelf('chocolate');
+        alert("Made some candies!");
+    }
+
+    function upgradeShop() {
+        alert("Shop upgraded! More candies and faster service!");
+    }
+
+    displayCustomers();
+</script>
+
+</body>
+</html>
