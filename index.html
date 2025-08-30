@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slime Shop Simulator - Login</title>
+<style>
+  body { font-family: sans-serif; text-align: center; margin-top: 100px; }
+  input { padding: 10px; margin: 5px; font-size: 16px; }
+  button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Slime Shop Simulator</h1>
+<input id="username" placeholder="Enter username"><br>
+<button onclick="login()">Login</button>
+
+<script>
+function login() {
+    const username = document.getElementById('username').value.trim();
+    if (!username) { alert('Enter a username'); return; }
+
+    // Load user data or create new
+    let userData = JSON.parse(localStorage.getItem(username));
+    if (!userData) {
+        userData = {
+            coins: 0,
+            ingredients: { slimeBase: 1, glitter: 0, beads: 0 },
+            upgrades: {},
+            requestsCompleted: 0
+        };
+        localStorage.setItem(username, JSON.stringify(userData));
+    }
+
+    // Save current user
+    localStorage.setItem('currentUser', username);
+    window.location.href = 'game.html';
+}
+</script>
+</body>
+</html>
