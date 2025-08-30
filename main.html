@@ -3,31 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Windows 12 Simulation</title>
+<title>Windows XP Simulation</title>
 <style>
-  body { margin:0; font-family:"Segoe UI",sans-serif; background:#1a1a1a; color:white; overflow:hidden;}
-  #login { display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; }
-  #login input { padding:10px; margin:5px; border-radius:5px; border:none; }
-  #login button { padding:10px; margin-top:5px; border:none; border-radius:5px; cursor:pointer; background:#0078d4; color:white; }
-  #desktop { display:none; width:100vw; height:100vh; position:relative; background:url('https://picsum.photos/1920/1080?blur=5') center/cover no-repeat; }
-  #welcome { position:absolute; top:10px; left:10px; font-size:20px; }
+  body { margin:0; font-family:"Tahoma",sans-serif; background:url('https://i.imgur.com/L1vZj6v.png') center/cover no-repeat; color:black; overflow:hidden;}
+  #login { display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; background:#0078d4; color:white;}
+  #login input { padding:10px; margin:5px; border-radius:3px; border:none; }
+  #login button { padding:10px; margin-top:5px; border:none; border-radius:3px; cursor:pointer; background:#0a64ad; color:white; }
+  #desktop { display:none; width:100vw; height:100vh; position:relative; }
+  #welcome { position:absolute; top:10px; left:10px; font-size:18px; color:white; text-shadow: 1px 1px 2px black;}
   .icon { width:80px; text-align:center; color:white; cursor:pointer; display:inline-block; margin:10px; }
-  .icon img { width:64px; height:64px; display:block; margin:auto; }
-  #taskbar { position:absolute; bottom:0; left:0; width:100%; height:40px; background:rgba(0,0,0,0.6); display:flex; align-items:center; padding:0 10px; }
-  #taskbar .task-icon { width:40px; height:40px; margin-right:5px; cursor:pointer; display:flex; align-items:center; justify-content:center; background:#555; border-radius:4px; }
-  .window { position:absolute; width:300px; height:200px; background:rgba(255,255,255,0.95); color:black; border:1px solid #aaa; border-radius:6px; box-shadow:0 0 10px rgba(0,0,0,0.5);}
-  .titlebar { background:#0078d4; color:white; padding:5px; cursor:move; display:flex; justify-content:space-between; align-items:center; user-select:none;}
-  .titlebar button { background:red; border:none; color:white; border-radius:3px; cursor:pointer; }
-  .content { padding:10px; height:calc(100% - 30px); overflow:auto; background:white; color:black;}
-  textarea { width:100%; height:100%; }
-  button.app-btn { padding:5px 10px; margin:2px; cursor:pointer; }
+  .icon img { width:48px; height:48px; display:block; margin:auto; }
+  #taskbar { position:absolute; bottom:0; left:0; width:100%; height:40px; background:#000080; display:flex; align-items:center; padding:0 5px; color:white; }
+  #taskbar .task-icon { width:36px; height:36px; margin-right:5px; cursor:pointer; display:flex; align-items:center; justify-content:center; background:#c0c0c0; border:1px solid #808080; }
+  .window { position:absolute; width:300px; height:200px; background:#c0c0c0; color:black; border:2px solid #000080; border-radius:0; box-shadow:2px 2px 5px rgba(0,0,0,0.5);}
+  .titlebar { background:#000080; color:white; padding:3px 5px; cursor:move; display:flex; justify-content:space-between; align-items:center; user-select:none;}
+  .titlebar button { background:#c0c0c0; border:1px solid #808080; width:20px; height:18px; font-weight:bold; cursor:pointer; }
+  .content { padding:5px; height:calc(100% - 25px); overflow:auto; background:white; color:black;}
+  textarea { width:100%; height:100%; font-family:Tahoma; font-size:14px; }
+  button.app-btn { padding:3px 8px; margin:2px; cursor:pointer; font-size:14px; }
 </style>
 </head>
 <body>
 
 <!-- Login Page -->
 <div id="login">
-  <h1>Windows 12 Login</h1>
+  <h1>Welcome to Windows XP</h1>
   <input type="text" id="username" placeholder="Enter username">
   <button onclick="login()">Login</button>
 </div>
@@ -37,19 +37,16 @@
   <div id="welcome"></div>
 
   <div class="icon" onclick="openApp('Notepad')">
-    <img src="https://cdn-icons-png.flaticon.com/512/105/105223.png"><p>Notepad</p>
+    <img src="https://cdn-icons-png.flaticon.com/512/84/84380.png"><p>Notepad</p>
   </div>
   <div class="icon" onclick="openApp('Calculator')">
     <img src="https://cdn-icons-png.flaticon.com/512/992/992700.png"><p>Calculator</p>
   </div>
-  <div class="icon" onclick="openApp('Browser')">
-    <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png"><p>Browser</p>
+  <div class="icon" onclick="openApp('Internet Explorer')">
+    <img src="https://cdn-icons-png.flaticon.com/512/888/888857.png"><p>IE</p>
   </div>
-  <div class="icon" onclick="openApp('File Explorer')">
-    <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png"><p>Explorer</p>
-  </div>
-  <div class="icon" onclick="openApp('Settings')">
-    <img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png"><p>Settings</p>
+  <div class="icon" onclick="openApp('My Computer')">
+    <img src="https://cdn-icons-png.flaticon.com/512/109/109612.png"><p>My Computer</p>
   </div>
   <div class="icon" onclick="openVirus()">
     <img src="https://cdn-icons-png.flaticon.com/512/833/833524.png"><p>DONT OPEN</p>
@@ -60,160 +57,126 @@
 </div>
 
 <script>
-  const loginDiv = document.getElementById('login');
-  const desktop = document.getElementById('desktop');
-  const welcome = document.getElementById('welcome');
-  const windowsContainer = document.getElementById('windows-container');
-  const taskbar = document.getElementById('taskbar');
-  let zIndexCounter = 1;
-  let dragData = null;
-  let username = '';
+const loginDiv = document.getElementById('login');
+const desktop = document.getElementById('desktop');
+const welcome = document.getElementById('welcome');
+const windowsContainer = document.getElementById('windows-container');
+const taskbar = document.getElementById('taskbar');
+let zIndexCounter = 1;
+let dragData = null;
+let username = '';
 
-  function login() {
-    username = document.getElementById('username').value || 'User';
-    loginDiv.style.display = 'none';
-    desktop.style.display = 'block';
-    welcome.innerText = `Welcome, ${username}!`;
+function login() {
+  username = document.getElementById('username').value || 'User';
+  loginDiv.style.display = 'none';
+  desktop.style.display = 'block';
+  welcome.innerText = `Welcome, ${username}!`;
+}
+
+function openApp(name) {
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.style.top = '100px';
+  win.style.left = '100px';
+  win.style.zIndex = zIndexCounter++;
+
+  let contentHTML = '';
+  switch(name){
+    case 'Notepad': contentHTML = '<textarea></textarea>'; break;
+    case 'Calculator':
+      contentHTML = `
+        <input type="text" id="calcInput" placeholder="0"><br>
+        <button class="app-btn" onclick="calcPress(this)">7</button>
+        <button class="app-btn" onclick="calcPress(this)">8</button>
+        <button class="app-btn" onclick="calcPress(this)">9</button>
+        <button class="app-btn" onclick="calcPress(this)">+</button><br>
+        <button class="app-btn" onclick="calcPress(this)">4</button>
+        <button class="app-btn" onclick="calcPress(this)">5</button>
+        <button class="app-btn" onclick="calcPress(this)">6</button>
+        <button class="app-btn" onclick="calcPress(this)">-</button><br>
+        <button class="app-btn" onclick="calcPress(this)">1</button>
+        <button class="app-btn" onclick="calcPress(this)">2</button>
+        <button class="app-btn" onclick="calcPress(this)">3</button>
+        <button class="app-btn" onclick="calcPress(this)">*</button><br>
+        <button class="app-btn" onclick="calcPress(this)">0</button>
+        <button class="app-btn" onclick="calcPress(this)">.</button>
+        <button class="app-btn" onclick="calcPress(this)">=</button>
+        <button class="app-btn" onclick="calcPress(this)">/</button>
+      `; break;
+    case 'Internet Explorer': contentHTML = '<p>Fake IE Browser Content</p>'; break;
+    case 'My Computer': contentHTML = '<p>C:\\<br>Documents<br>Downloads</p>'; break;
+    default: contentHTML = '<p>App Content</p>';
   }
 
-  function openApp(name) {
-    const win = document.createElement('div');
-    win.className = 'window';
-    win.style.top = '100px';
-    win.style.left = '100px';
-    win.style.zIndex = zIndexCounter++;
+  win.innerHTML = `<div class="titlebar" onmousedown="dragStart(event,this.parentElement)">${name}
+                    <button onclick="closeWindow(this)">X</button></div>
+                    <div class="content">${contentHTML}</div>`;
+  windowsContainer.appendChild(win);
 
-    let contentHTML = '';
-    switch(name){
-      case 'Notepad': contentHTML = '<textarea></textarea>'; break;
-      case 'Calculator':
-        contentHTML = `
-          <input type="text" id="calcInput" placeholder="0"><br>
-          <button class="app-btn" onclick="calcPress(this)">7</button>
-          <button class="app-btn" onclick="calcPress(this)">8</button>
-          <button class="app-btn" onclick="calcPress(this)">9</button>
-          <button class="app-btn" onclick="calcPress(this)">+</button><br>
-          <button class="app-btn" onclick="calcPress(this)">4</button>
-          <button class="app-btn" onclick="calcPress(this)">5</button>
-          <button class="app-btn" onclick="calcPress(this)">6</button>
-          <button class="app-btn" onclick="calcPress(this)">-</button><br>
-          <button class="app-btn" onclick="calcPress(this)">1</button>
-          <button class="app-btn" onclick="calcPress(this)">2</button>
-          <button class="app-btn" onclick="calcPress(this)">3</button>
-          <button class="app-btn" onclick="calcPress(this)">*</button><br>
-          <button class="app-btn" onclick="calcPress(this)">0</button>
-          <button class="app-btn" onclick="calcPress(this)">.</button>
-          <button class="app-btn" onclick="calcPress(this)">=</button>
-          <button class="app-btn" onclick="calcPress(this)">/</button>
-        `; break;
-      case 'Browser': contentHTML = '<input type="text" placeholder="Enter URL"><p>Fake Browser Content</p>'; break;
-      case 'File Explorer': contentHTML = '<p>Folder 1</p><p>Folder 2</p><p>File.txt</p>'; break;
-      case 'Settings': contentHTML = '<button onclick="changeTheme()">Toggle Dark/Light Theme</button>'; break;
-      default: contentHTML = '<p>App Content</p>';
-    }
+  const taskIcon = document.createElement('div');
+  taskIcon.className = 'task-icon';
+  taskIcon.innerText = name[0];
+  taskIcon.onclick = () => win.style.zIndex = zIndexCounter++;
+  taskbar.appendChild(taskIcon);
+}
 
-    win.innerHTML = `<div class="titlebar" onmousedown="dragStart(event,this.parentElement)">${name}
-                      <button onclick="closeWindow(this)">X</button></div>
-                      <div class="content">${contentHTML}</div>`;
-    windowsContainer.appendChild(win);
+function closeWindow(btn) { btn.closest('.window').remove(); }
 
-    // Taskbar icon
-    const taskIcon = document.createElement('div');
-    taskIcon.className = 'task-icon';
-    taskIcon.innerText = name[0];
-    taskIcon.onclick = () => win.style.zIndex = zIndexCounter++;
-    taskbar.appendChild(taskIcon);
+function dragStart(e, win) {
+  e.preventDefault();
+  dragData = {win, offsetX: e.clientX - win.offsetLeft, offsetY: e.clientY - win.offsetTop};
+  window.addEventListener('mousemove', dragMove);
+  window.addEventListener('mouseup', dragEnd);
+}
+
+function dragMove(e) {
+  if(!dragData) return;
+  dragData.win.style.left = (e.clientX - dragData.offsetX)+'px';
+  dragData.win.style.top = (e.clientY - dragData.offsetY)+'px';
+}
+
+function dragEnd() { dragData = null; window.removeEventListener('mousemove', dragMove); window.removeEventListener('mouseup', dragEnd); }
+
+function calcPress(btn) {
+  const input = document.getElementById('calcInput');
+  if(btn.innerText === '=') {
+    try { input.value = eval(input.value); } catch { input.value = 'Error'; }
+  } else { input.value += btn.innerText; }
+}
+
+// FAKE VIRUS
+function openVirus() {
+  const overlay = document.createElement('div');
+  overlay.style.position='fixed';
+  overlay.style.top='0'; overlay.style.left='0';
+  overlay.style.width='100vw'; overlay.style.height='100vh';
+  overlay.style.background='black'; overlay.style.color='red';
+  overlay.style.display='flex'; overlay.style.alignItems='center'; overlay.style.justifyContent='center';
+  overlay.style.fontSize='3em'; overlay.style.zIndex='9999'; overlay.style.textAlign='center';
+  overlay.innerText='!!!SYSTEM FAILURE!!!';
+  document.body.appendChild(overlay);
+
+  let count = 10;
+  const interval = setInterval(()=>{
+    overlay.innerText=`!!!SYSTEM FAILURE!!!\nShutting down in ${count} seconds`;
+    overlay.style.background = count % 2 === 0 ? 'red' : 'black';
+    overlay.style.color = count % 2 === 0 ? 'black' : 'red';
+    count--;
+    if(count<0){ clearInterval(interval); overlay.innerText='!!!VIRUS ACTIVATED!!!\nSYSTEM CORRUPTED'; flashScreen(overlay); }
+  },500);
+
+  function flashScreen(el){
+    let i=0;
+    const flashInterval = setInterval(()=>{
+      el.style.background=i%2===0?'white':'black';
+      el.style.color=i%2===0?'black':'red';
+      el.innerText='!!!VIRUS ACTIVATED!!!';
+      i++; if(i>30) clearInterval(flashInterval);
+    },100);
   }
 
-  function closeWindow(btn) {
-    const win = btn.closest('.window');
-    win.remove();
-  }
-
-  function dragStart(e, win) {
-    e.preventDefault();
-    dragData = {win, offsetX: e.clientX - win.offsetLeft, offsetY: e.clientY - win.offsetTop};
-    window.addEventListener('mousemove', dragMove);
-    window.addEventListener('mouseup', dragEnd);
-  }
-
-  function dragMove(e) {
-    if(!dragData) return;
-    dragData.win.style.left = (e.clientX - dragData.offsetX)+'px';
-    dragData.win.style.top = (e.clientY - dragData.offsetY)+'px';
-  }
-
-  function dragEnd() {
-    dragData = null;
-    window.removeEventListener('mousemove', dragMove);
-    window.removeEventListener('mouseup', dragEnd);
-  }
-
-  function calcPress(btn) {
-    const input = document.getElementById('calcInput');
-    if(btn.innerText === '=') {
-      try { input.value = eval(input.value); } catch { input.value = 'Error'; }
-    } else { input.value += btn.innerText; }
-  }
-
-  function changeTheme() {
-    if(document.body.style.background === 'white'){
-      document.body.style.background = '#1a1a1a'; document.body.style.color='white';
-    } else {
-      document.body.style.background = 'white'; document.body.style.color='black';
-    }
-  }
-
-  // FAKE VIRUS FUNCTION
-  function openVirus() {
-    const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100vw';
-    overlay.style.height = '100vh';
-    overlay.style.background = 'black';
-    overlay.style.color = 'red';
-    overlay.style.display = 'flex';
-    overlay.style.alignItems = 'center';
-    overlay.style.justifyContent = 'center';
-    overlay.style.fontSize = '3em';
-    overlay.style.zIndex = '9999';
-    overlay.style.textAlign = 'center';
-    overlay.innerText = '!!!SYSTEM FAILURE!!!';
-    document.body.appendChild(overlay);
-
-    // Intense flashing effect
-    let count = 10;
-    const interval = setInterval(() => {
-      overlay.innerText = `!!!SYSTEM FAILURE!!!\nShutting down in ${count} seconds`;
-      overlay.style.background = count % 2 === 0 ? 'red' : 'black';
-      overlay.style.color = count % 2 === 0 ? 'black' : 'red';
-      count--;
-      if(count < 0){
-        clearInterval(interval);
-        overlay.innerText = '!!!VIRUS ACTIVATED!!!\nSYSTEM CORRUPTED';
-        flashScreen(overlay);
-      }
-    }, 500);
-
-    function flashScreen(el) {
-      let i = 0;
-      const flashInterval = setInterval(() => {
-        el.style.background = i % 2 === 0 ? 'white' : 'black';
-        el.style.color = i % 2 === 0 ? 'black' : 'red';
-        el.innerText = '!!!VIRUS ACTIVATED!!!';
-        i++;
-        if(i > 30) clearInterval(flashInterval);
-      }, 100);
-    }
-
-    const audio = new Audio('https://www.soundjay.com/button/beep-07.wav'); 
-    audio.loop = true; 
-    audio.play();
-  }
-
+  const audio = new Audio('https://www.soundjay.com/button/beep-07.wav'); audio.loop=true; audio.play();
+}
 </script>
-
 </body>
 </html>
