@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crypto Simulator</title>
+<title>💰 Millionaire Simulator 💰</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   body { font-family: Arial, sans-serif; background: #121212; color: #fff; padding: 20px; }
   h1 { text-align: center; }
   #wallet, #portfolio, #actions { margin: 20px 0; }
-  button { padding: 10px; margin: 5px; cursor: pointer; }
-  input { width: 60px; padding: 5px; }
+  button { padding: 10px; margin: 5px; cursor: pointer; font-size: 16px; }
   table { width: 100%; border-collapse: collapse; margin-top: 10px; }
   th, td { border: 1px solid #444; padding: 8px; text-align: center; }
   th { background: #222; }
@@ -18,14 +17,14 @@
 </head>
 <body>
 
-<h1>Crypto Simulator</h1>
+<h1>💰 Millionaire Simulator 💰</h1>
 
 <div id="wallet">
-  <strong>Wallet Balance:</strong> <span id="balance">1000</span> CoinX
+  💵 <strong>Wallet Balance:</strong> <span id="balance">1000</span> CoinX
 </div>
 
 <div id="portfolio">
-  <h3>Portfolio</h3>
+  📊 <h3>Portfolio</h3>
   <table>
     <thead>
       <tr>
@@ -40,9 +39,8 @@
 </div>
 
 <div id="actions">
-  <input type="number" id="amount" placeholder="Amount" min="1">
-  <button onclick="buyCoin()">Buy</button>
-  <button onclick="sellCoin()">Sell</button>
+  <button onclick="buyCoin()">🟢 Buy 1 CoinX</button>
+  <button onclick="sellCoin()">🔴 Sell 1 CoinX</button>
 </div>
 
 <canvas id="priceChart" height="100"></canvas>
@@ -60,7 +58,7 @@ function updateUI() {
   tbody.innerHTML = '';
   for (let coin in portfolio) {
     let value = portfolio[coin] * currentPrice;
-    let profit = value - (portfolio[coin] * 100); // assuming starting buy price = 100
+    let profit = value - (portfolio[coin] * 100); // starting buy price = 100
     tbody.innerHTML += `<tr>
       <td>${coin}</td>
       <td>${portfolio[coin]}</td>
@@ -72,24 +70,22 @@ function updateUI() {
 
 // Buy coin
 function buyCoin() {
-  const amount = parseFloat(document.getElementById('amount').value);
-  if (amount > 0 && balance >= amount * currentPrice) {
-    balance -= amount * currentPrice;
-    portfolio.CoinX += amount;
+  if (balance >= currentPrice) {
+    balance -= currentPrice;
+    portfolio.CoinX += 1;
     saveGame();
     updateUI();
-  } else alert('Not enough balance or invalid amount');
+  } else alert('❌ Not enough balance to buy 1 CoinX!');
 }
 
 // Sell coin
 function sellCoin() {
-  const amount = parseFloat(document.getElementById('amount').value);
-  if (amount > 0 && portfolio.CoinX >= amount) {
-    balance += amount * currentPrice;
-    portfolio.CoinX -= amount;
+  if (portfolio.CoinX >= 1) {
+    balance += currentPrice;
+    portfolio.CoinX -= 1;
     saveGame();
     updateUI();
-  } else alert('Not enough coins or invalid amount');
+  } else alert('❌ You have no CoinX to sell!');
 }
 
 // Save game
