@@ -1,147 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><!DOCTYPE html>
-<html lang="en">
-<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Page</title>
+<title>Main Page</title>
 <style>
-  * {box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
   body {
-    display: flex; justify-content: center; align-items: center; height: 100vh;
-    background: linear-gradient(135deg, #6b73ff, #000dff);
-  }
-  .login-container {
-    background: #fff; padding: 40px 30px; border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2); width: 100%; max-width: 400px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #00d2ff, #3a7bd5); color: #fff;
     text-align: center;
-    transition: transform 0.3s ease;
   }
-  .login-container:hover {transform: translateY(-5px);}
-  .login-container h2 {margin-bottom: 25px; color: #333;}
-  .login-container input {
-    width: 100%; padding: 12px 15px; margin: 10px 0;
-    border-radius: 8px; border: 1px solid #ccc; font-size: 16px;
+  button {
+    padding: 12px 20px; margin-top: 20px; border: none; border-radius: 8px;
+    background: #000dff; color: #fff; font-size: 16px; cursor: pointer;
+    transition: background 0.3s ease;
   }
-  .login-container button {
-    width: 100%; padding: 12px; margin-top: 15px; border: none;
-    border-radius: 8px; background: #000dff; color: #fff; font-size: 16px;
-    cursor: pointer; transition: background 0.3s ease;
-  }
-  .login-container button:hover {background: #6b73ff;}
-  .secondary-btn {
-    background: #ccc; color: #333; margin-top: 10px;
-  }
-  .secondary-btn:hover {background: #bbb;}
-  .error {color: red; margin-top: 10px; font-size: 14px; display: none;}
-  .toggle-password {
-    margin-top: -10px; margin-bottom: 10px; font-size: 12px;
-    cursor: pointer; color: #000dff; text-decoration: underline;
-    display: inline-block;
-  }
+  button:hover {background: #6b73ff;}
 </style>
 </head>
 <body>
-<div class="login-container">
-  <h2>Login</h2>
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-  <div class="toggle-password" onclick="togglePassword()">Show Password</div>
-  <button onclick="login()">Login</button>
-  <button class="secondary-btn" onclick="createAccount()">Create Account</button>
-  <div class="error" id="error"></div>
-</div>
-
 <script>
-  // Toggle password visibility
-  function togglePassword() {
-    const pass = document.getElementById("password");
-    pass.type = pass.type === "password" ? "text" : "password";
-  }
-
-  // Login function
-  function login() {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-    const errorDiv = document.getElementById("error");
-
-    const accounts = JSON.parse(localStorage.getItem("accounts") || "{}");
-
-    if (accounts[username] && accounts[username] === password) {
-      errorDiv.style.display = "none";
-      window.location.href = "main.html";
-    } else {
-      errorDiv.style.display = "block";
-      errorDiv.textContent = "Invalid username or password";
-    }
-  }
-
-  // Create account function
-  function createAccount() {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-    const errorDiv = document.getElementById("error");
-
-    if (!username || !password) {
-      errorDiv.style.display = "block";
-      errorDiv.textContent = "Username and password cannot be empty";
-      return;
-    }
-
-    const accounts = JSON.parse(localStorage.getItem("accounts") || "{}");
-
-    if (accounts[username]) {
-      errorDiv.style.display = "block";
-      errorDiv.textContent = "Username already exists";
-      return;
-    }
-
-    accounts[username] = password;
-    localStorage.setItem("accounts", JSON.stringify(accounts));
-
-    errorDiv.style.display = "none";
-    window.location.href = "main.html";
+  const loggedInUser = localStorage.getItem("loggedIn");
+  if (!loggedInUser) {
+    window.location.href = "index.html";
   }
 </script>
-</body>
-</html>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Slime Shop Simulator - Login</title>
-<style>
-  body { font-family: sans-serif; text-align: center; margin-top: 100px; }
-  input { padding: 10px; margin: 5px; font-size: 16px; }
-  button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
-</style>
-</head>
-<body>
-<h1>Slime Shop Simulator</h1>
-<input id="username" placeholder="Enter username"><br>
-<button onclick="login()">Login</button>
+<h1>Welcome, <span id="user"></span></h1>
+<p>You are now logged in.</p>
+<button onclick="logout()">Logout</button>
 
 <script>
-function login() {
-    const username = document.getElementById('username').value.trim();
-    if (!username) { alert('Enter a username'); return; }
+  const userSpan = document.getElementById("user");
+  userSpan.textContent = loggedInUser;
 
-    // Load user data or create new
-    let userData = JSON.parse(localStorage.getItem(username));
-    if (!userData) {
-        userData = {
-            coins: 0,
-            ingredients: { slimeBase: 1, glitter: 0, beads: 0 },
-            upgrades: {},
-            requestsCompleted: 0
-        };
-        localStorage.setItem(username, JSON.stringify(userData));
-    }
-
-    // Save current user
-    localStorage.setItem('currentUser', username);
-    window.location.href = 'game.html';
-}
+  function logout() {
+    localStorage.removeItem("loggedIn");
+    window.location.href = "index.html";
+  }
 </script>
 </body>
 </html>
