@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slime Shop Simulator</title>
+<style>
+  body { font-family: sans-serif; text-align: center; margin: 50px; }
+  .ingredient { margin: 5px; padding: 10px; border: 1px solid black; display: inline-block; cursor: pointer; }
+  #requests { margin-top: 20px; }
+  button { padding: 10px; margin-top: 10px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>Slime Shop Simulator</h1>
+<p>Coins: <span id="coins">0</span></p>
+
+<h2>Ingredients</h2>
+<div id="ingredients"></div>
+
+<h2>Current Request</h2>
+<div id="requests"></div>
+<button onclick="deliverSlime()">Deliver Slime</button>
+
+<script>
+let username = localStorage.getItem('currentUser');
+if (!username) { window.location.href = 'index.html'; }
+
+let userData = JSON.parse(localStorage.getItem(username));
+
+// Ingredients
+let ingredientOptions = ['slimeBase', 'glitter', 'beads'];
+let currentSlime = { slimeBase: 0, glitter: 0, beads: 0 };
+
+// Display ingredients
+function showIngredients() {
+    const ingDiv = document.getElementById('ingredients');
+    ingDiv.innerHTML = '';
+    ingredientOptions.forEach(ing => {
+        const div = document.createElement('div');
+        div.className = 'ingredient';
+        div.innerText = `${ing} (${userData.ingredients[ing] || 0})`;
+        div.onclick = () => { addIngredient(ing); };
+        ingDiv.appendChild(div);
+    });
+}
+
+// Add ingredient to current slime
+function addIngredient(ing) {
+    if ((userData.ingredients[ing] || 0) > 0) {
+        currentSlime[ing]++;
+        userData.ingredients[ing]--;
+        showIngredients();
+        showRequest();
+    } else {
+        alert(`You don't have ${ing}!`);
+    }
+}
+
+// Random customer request
+let currentRequest = generateRequest();
+function generateRequest() {
+    return {
+        slimeBase: 1,
+        glitter: Math.floor(Math.random()*2),
+        beads: Math.floor(Math.random()*2)
+    };
+}
+
+// Show request
+function showRequest() {
+    const reqDiv = document.getElementById('requests');
+    reqDiv.innerHTML = '';
+    for (let key in currentRequest) {
+        reqDiv.innerHTML += `${key}: ${currentRequest[key]} <br>`;
+    }
+    reqDiv.innerHTML += `<br>Current slime:<br>`;
+    for (let key in currentSlime) {
+        reqDiv.innerHTML += `${key}: ${currentSlime[key]} <br>`;
+    }
+}
+
+// Deliver slime
+function deliverSlime() {
+    let success = true;
+    for (let key in currentRequest) {
+        if (currentRequest[key] !== currentSlime[key]) success = false;
+    }
+    if (success) {
+        alert('Perfect! You earned 10 coins.');
+        userData.coins += 10;
+        userData.requestsCompleted++;
+    } else {
+        alert('Not perfect. You earned 5 coins.');
+        userData.coins += 5;
+    }
+
+    // Reset
+    currentSlime = { slimeBase: 0, glitter: 0, beads: 0 };
+    currentRequest = generateRequest();
+    showIngredients();
+    showRequest();
+    document.getElementById('coins').innerText = userData.coins;
+
+    // Save
+    localStorage.setItem(username, JSON.stringify(userData));
+}
+
+// Initial display
+showIngredients();
+showRequest();
+document.getElementById('coins').innerText = userData.coins;
+</script>
+</body>
+</html>
